@@ -20,8 +20,54 @@ end entity unidadeControle;
 
 architecture arch of unidadeControle is
 
-    signal 
+    signal isR, isLDUR, isSTUR, isCBZ, isB : bit;
 
 begin
+
+    --Identificacao do tipo de instrucao
+
+    with opcode select
+        isR <= '1' when "10001011000" | "11001011000" | "10001010000" | "10101010000",
+               '0' when others;
+
+    with opcode select
+        isLDUR <= '1' when "11111000010",
+                  '0' when others;
+
+    with opcode select
+        isSTUR <= '1' when "11111000000",
+                  '0' when others;
+
+    isCBZ <= '1' when (opcode(10 downto 3) = "10110100") else
+             '0';
+    isB <= '1' when (opcode(10 downto 5) = "000101") else
+           '0';
+
+    -- Determinacao dos sinais de controle
+
+    reg2Loc <= '1' when (isSTUR or isCBZ) else '0';
+    aluSrc <= '1' when (isLDUR or isSTUR) else '0';
+    memToReg <= '1' when (isLDUR) else '0';
+    regWrite <= '1' when (isR or isLDUR) else '0';
+    memRead <= '1' when (isLDUR) else '0';
+    memWrite <= '1' when (isSTUR) else '0';
+    branch <= '1' when (isCBZ) else '0';
+    uncondBranch <= '1' when (isB) else '0';
+
+    alu_control <= "0010" when (opcode = "10001011000" or isLDUR or isSTUR ) else
+                   "0110" when (opcode = "11001011000") else
+                   "0000" when (opcode = "10001010000") else
+                   "0001" when (opcode = "10101010000") else
+                   "0011" when (isCBZ) else
+                   "0000";
+
+    extendMSB <= "10100" when (isLDUR or isSTUR) else
+                 "10111" when (isCBZ) else
+                 "11001" when (isB) else
+                 "00000";
+    
+    extendLSB <= "01100" when (isLDUR or isSTUR) else
+                 "00101" when (isCBZ) else
+                 "00000";
 
 end arch;

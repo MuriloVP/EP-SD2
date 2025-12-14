@@ -148,7 +148,7 @@ architecture arch of fluxoDados is
 
 begin
 
-    pc : reg
+    pc: reg
         generic map (dataSize => 7)
         port map (
             clock => clock,
