@@ -149,7 +149,7 @@ architecture arch of fluxoDados is
 begin
 
     pc : reg
-        generic map (dataSize => 7);
+        generic map (dataSize => 7)
         port map (
             clock => clock,
             reset => reset,
@@ -163,7 +163,7 @@ begin
             addressSize => 7,    
             dataSize    => 8,    
             datFileName => "memInstrPolilegv8.dat" 
-        );
+        )
         port map (
             addr => pc_out,
             data => instruction
@@ -172,7 +172,7 @@ begin
     mux_reg2Loc: mux_n
         generic map (
             dataSize => 64
-        );
+        )
         port map (
             in0 => (63 downto 5 => '0') & instruction(20 downto 16),
             in1 => (63 downto 5 => '0') & instruction(4 downto 0),
@@ -198,7 +198,7 @@ begin
             dataISize => 32,       
             dataOSize => 64,       
             dataMaxPosition => 5
-        );
+        )
         port map (
             inData => instruction,
             inDataStart => extendMSB,
@@ -209,7 +209,7 @@ begin
     mux_ula_inb: mux_n
         generic map (
             dataSize => 64
-        );
+        )
         port map (
             in0 => qr2,
             in1 => sign_ext_out,
@@ -233,7 +233,7 @@ begin
             addressSize => 7,
             dataSize => 8,
             datFileName => "memDadosInicialPolilegv8.dat"
-        );
+        )
         port map (
             clock => clock, 
             wr => memWrite,     
@@ -245,7 +245,7 @@ begin
     mux_memtoReg: mux_n
         generic map (
             dataSize => 64
-        );
+        )
         port map (
             in0 => ula_result,
             in1 => memDadostoMux,
@@ -256,7 +256,7 @@ begin
     shift2: two_left_shifts
         generic map (
             dataSize => 64
-        );
+        )
         port map (
             input => sign_ext_out,
             output => twoshifts_out
@@ -265,7 +265,7 @@ begin
     common_adder: adder_n
         generic map (
             dataSize => 64
-        );
+        )
         port map (
             in0 => (63 downto 7 => '0') & pc_out,
             in1 => (63 downto 3 => '0') & "100",
@@ -276,7 +276,7 @@ begin
     branch_adder: adder_n
         generic map (
             dataSize => 64
-        );
+        )
         port map (
             in0 => (63 downto 7 => '0') & pc_out,
             in1 =>  twoshifts_out,
@@ -289,12 +289,14 @@ begin
     mux_pc: mux_n
         generic map (
             dataSize => 64
-        );
+        )
         port map (
             in0 => common_adder_out,
             in1 => branch_adder_out,
             sel => Selpc,
             dOut => pc_in
         );
+
+    opcode <= instruction(31 downto 21);
 
 end arch;
