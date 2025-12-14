@@ -28,82 +28,51 @@ architecture arch of ula is
         );
     end component;
 
-    type ula_array_type is array (63 downto 0) of bit_vector(63 downto 0);
-    signal ula_cout : ula_array_type;
-    signal ula_result : ula_array_type;
-
-    signal A_invert : bit_vector (63 downto 0);
-    signal B_invert : bit_vector (63 downto 0);
-    signal A_unsigned : unsigned (63 downto 0);
-    signal A_unsigned_invert : unsigned (63 downto 0);
-    signal B_unsigned : unsigned (63 downto 0);
-    signal B_unsigned_invert : bit_vector(63 downto 0);
-    signal Cin_init : bit;
-    signal Or_64bits : bit;
-    signal Or_result : bit_vector (63 downto 0);
-    signal Op_dec
-
+    signal ula_result : bit_vector(63 downto 0);
+    signal ula_cout : bit_vector(63 downto 0);
+    signal ula_overflow : bit_vector(63 downto 0);
 
 begin
 
-    A_unsigned <= unsigned(A);
-    B_unsigned <= unsigned(B);
-    A_unsigned_invert <= (NOT A_unsigned) + 1;
-    B_unsigned_invert <= (NOT B_unsigned) + 1;
-    A_invert <= bit_vector(A_unsigned_invert);
-    B_invert <= bit_vector(B_unsigned_invert);
+    Ula_0: ula_bit 
+        port map (
+            a => A(0),
+            b => B(0),
+            ainvert => S(3),
+            binvert => S(2),
+            cin => S(2),
+            operation => S(1 downto 0),
+            result => ula_result(0),
+            cout => ula_cout(0),
+            overflow => ula_overflow(0)
+        );
 
-    with S select
-    Op_dec <= "00" when "0000",
-            "01" when "0001",
-            "10" when "0010"
-
-
-    Ula_0: component ula_bit 
-            port map (
-               a => A(0),
-               b => B(0),
-               ainvert => A_invert(0),
-               binvert => B_invert(0),
-               cin => ,
-               operation => ,
-               result => ula_result(0),
-               cout => ula_cout(0),
-               overflow =>
-            );
     -- Loop de Geração para Registradores X0 a X30
     gen_ulas: for i in 1 to 63 generate
         
     begin
 
-        -- Instanciação do Registrador 'i'
-        Ula_i: component ula_bit 
+        -- Instanciação da Ula 'i'
+        Ula_i: ula_bit 
             port map (
                a => A(i),
                b => B(i),
-               ainvert => A_invert(i),
-               binvert => B_invert(i),
-               cin => ula_cout(i-1);
-               operation => ,
+               ainvert => S(3),
+               binvert => S(2),
+               cin => ula_cout(i-1),
+               operation => S(1 downto 0),
                result => ula_result(i),
                cout => ula_cout(i),
-               overflow => 
+               overflow => ula_overflow(i)
             );
             
-    end generate gen_ulas;
+    end generate;
 
-    
-    Or_result <= ula_result(0);
+    F <= ula_result;
 
-    Or_camparador : for i in 1 to 63 loop
-
-        Or_result(i) <= ula_result(i) or Or_result(i-1);
-        
-    end loop ; -- Or_camparador
-    Or_64bits <= or_result(63);
-    Z <= not (Or_64bits);
-    
-   Ov<= u63_cout(63);
-   F <= ula_cout;
+    -- Flags
+    Z <= '1' when (unsigned(ula_result) = 0) else '0';
+    Ov <= ula_overflow(63);
+    Co <= ula_cout(63);
 
 end architecture arch;

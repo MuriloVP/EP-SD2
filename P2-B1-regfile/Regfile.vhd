@@ -58,7 +58,7 @@ begin
         reg_enable <= regWrite when wr_integer = i else '0';
 
         -- Instanciação do Registrador 'i'
-        R_i: component reg 
+        R_i: reg 
             generic map (dataSize => 64)
             port map (
                 clock => clock,
@@ -68,7 +68,7 @@ begin
                 q => reg_data_out(i)
             );
             
-    end generate gen_registers;
+    end generate;
     
     -- (Para XZR(X31): a saída é sempre 0)
     reg_data_out(31) <= (others => '0');
