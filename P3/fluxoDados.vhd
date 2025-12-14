@@ -1,3 +1,6 @@
+library ieee;
+use ieee.numeric_bit.all;
+
 entity fluxoDados is
     port(
         clock : in bit; -- entrada de clock
@@ -22,7 +25,7 @@ architecture arch of fluxoDados is
     -- Declaracao de componentes ja projetados
 
     component reg is
-        generic (dataSize: natural : 64);
+        generic (dataSize: natural := 64);
         port (
             clock:  in bit;
             reset:  in bit;
@@ -106,8 +109,8 @@ architecture arch of fluxoDados is
             clock  : in  bit; 
             wr     : in  bit;
             addr   : in  bit_vector(addressSize-1 downto 0);
-            data_i : in  bit_vector(dataSize-1 downto 0);
-            data_o : out bit_vector(dataSize-1 downto 0)
+            data_i : in  bit_vector(8*dataSize-1 downto 0);
+            data_o : out bit_vector(8*dataSize-1 downto 0)
         );
     end component;
 
@@ -133,14 +136,15 @@ architecture arch of fluxoDados is
         );
     end component;
 
-    signal pc_in, pc_out : bit_vector(6 downto 0);
+    signal pc_in : bit_vector(63 downto 0);
+    signal pc_out : bit_vector(6 downto 0);
     signal instruction : bit_vector(31 downto 0);
-    signal reg2Loc_out : bit_vector(4 downto 0);
+    signal reg2Loc_out : bit_vector(63 downto 0);
     signal qr1, qr2, sign_ext_out : bit_vector(63 downto 0);
-    signal branch_adder_out, common_adder_out : bit_vector(6 downto 0);
-    signal twoshift_out, ula_inb, ula_result : bit_vector(63 downto 0);
+    signal branch_adder_out, common_adder_out : bit_vector(63 downto 0);
+    signal twoshifts_out, ula_inb, ula_result : bit_vector(63 downto 0);
     signal memDadostoMux, muxtoRegwrite : bit_vector(63 downto 0);
-    signal z_flag, ov_flag, co_flag pc_src : bit;
+    signal z_flag, ov_flag, co_flag, co_common, co_branch, Selpc : bit;
 
 begin
 
@@ -150,7 +154,7 @@ begin
             clock => clock,
             reset => reset,
             enable => '1',
-            d => pc_in,
+            d => pc_in(6 downto 0),
             q => pc_out
         );
     
@@ -167,11 +171,11 @@ begin
 
     mux_reg2Loc: mux_n
         generic map (
-            dataSize => 5
+            dataSize => 64
         );
         port map (
-            in0 => instruction(20 downto 16),
-            in1 => instruction(4 downto 0),
+            in0 => (63 downto 5 => '0') & instruction(20 downto 16),
+            in1 => (63 downto 5 => '0') & instruction(4 downto 0),
             sel => reg2Loc,
             dOut => reg2Loc_out
         );
@@ -182,7 +186,7 @@ begin
             reset => reset,       
             regWrite => regWrite,   
             rr1 => instruction(9 downto 5),         
-            rr2 => reg2Loc_out,              
+            rr2 => reg2Loc_out(4 downto 0),              
             wr => instruction(4 downto 0),     
             d => muxtoRegwrite,    
             q1 => qr1,    
@@ -233,7 +237,7 @@ begin
         port map (
             clock => clock, 
             wr => memWrite,     
-            addr => ula_result,  
+            addr => ula_result(6 downto 0),  
             data_i => qr2,
             data_o => memDadostoMux
         );
@@ -255,7 +259,18 @@ begin
         );
         port map (
             input => sign_ext_out,
-            output => twoshifts_out,
+            output => twoshifts_out
+        );
+
+    common_adder: adder_n
+        generic map (
+            dataSize => 64
+        );
+        port map (
+            in0 => (63 downto 7 => '0') & pc_out,
+            in1 => (63 downto 3 => '0') & "100",
+            sum => common_adder_out,
+            cOut => co_common
         );
 
     branch_adder: adder_n
@@ -263,70 +278,23 @@ begin
             dataSize => 64
         );
         port map (
-            in0 => pc_out;
-            in1 =>  sign_ext_out;
-            sum  : out bit_vector(dataSize-1 downto 0);
-            cOut : out bit
+            in0 => (63 downto 7 => '0') & pc_out,
+            in1 =>  twoshifts_out,
+            sum => branch_adder_out,
+            cOut => co_branch
         );
 
+    Selpc <= uncondBranch or (branch and z_flag);
 
-
-
-    component sign_extend is
-        generic (
-            dataISize       : natural := 32; -- Tamanho da entrada
-            dataOSize       : natural := 64; -- Tamanho da saída
-            dataMaxPosition : natural := 5   -- (log2(dataISize)=5)
+    mux_pc: mux_n
+        generic map (
+            dataSize => 64
         );
-        port(
-            inData      : in  bit_vector(dataISize-1 downto 0);
-            inDataStart : in  bit_vector(dataMaxPosition-1 downto 0); -- Bit mais significativo (Sinal)
-            inDataEnd   : in  bit_vector(dataMaxPosition-1 downto 0); -- Bit menos significativo
-            outData     : out bit_vector(dataOSize-1 downto 0)
-        );
-    end component;
-
-    
-
-
-
-
-
-
-        
-    -- Mux que escolhe entre Rm (bits 20-16) e Rd (bits 4-0) para entrar no Read Register 2
-    -- ATENÇÃO: Generic é 5 bits (tamanho de endereço de registrador)
-    mux_reg2loc: mux2to1
-        generic map (dataSize => 5)
         port map (
-            d0  => instruction(20 downto 16), -- Se reg2loc = '0'
-            d1  => instruction(4 downto 0),   -- Se reg2loc = '1'
-            sel => reg2loc,                   -- Vem da Unidade de Controle (Porta de Entrada)
-            y   => reg2Loc_out                -- Vai para o signal de 5 bits
+            in0 => common_adder_out,
+            in1 => branch_adder_out,
+            sel => Selpc,
+            dOut => pc_in
         );
-
-    -- Banco de Registradores
-    bancoRegs: regfile
-        generic map (dataSize => 64)
-        port map (
-            clock    => clock,
-            reset    => reset,
-            regWrite => regWrite,             -- Vem da Unidade de Controle
-            rr1      => instruction(9 downto 5), -- Rn
-            rr2      => reg2Loc_out,          -- Vem do Mux acima
-            wr       => instruction(4 downto 0), -- Rd (Destino de escrita)
-            d        => memtoReg_out,         -- Dado para escrever (vem do final do fluxo)
-            q1       => qr1,
-            q2       => qr2
-        );
-
-    -- Extensor de Sinal (Sign Extend)
-    extensor: signExtend
-        port map (
-            i => instruction, -- Entrada de 32 bits
-            o => sign_ext_out -- Saída de 64 bits estendida
-        );
-
-    opcode <= pc_out (31 downto 21);
 
 end arch;

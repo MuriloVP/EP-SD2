@@ -12,8 +12,8 @@ entity memoriaDados is
     clock  : in  bit; 
     wr     : in  bit;
     addr   : in  bit_vector(addressSize-1 downto 0);
-    data_i : in  bit_vector(dataSize-1 downto 0);
-    data_o : out bit_vector(dataSize-1 downto 0)
+    data_i : in  bit_vector(8*dataSize-1 downto 0);
+    data_o : out bit_vector(8*dataSize-1 downto 0)
   );
 end memoriaDados;
 

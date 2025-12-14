@@ -19,7 +19,7 @@ architecture arch of regfile is
 
     -- Declaração do componente reg
   component reg is
-    generic (dataSize: natural);
+    generic (dataSize: natural := 64);
     port (
       clock:  in bit;
       reset:  in bit;
