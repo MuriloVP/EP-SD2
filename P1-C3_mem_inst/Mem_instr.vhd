@@ -1,5 +1,5 @@
 --  Baseado em arquivo fornecido por
---! @author Bruno Albertini (balbertini@usp.br)
+--  Bruno Albertini (balbertini@usp.br)
 -----------------------------------------------
 
 library ieee;
@@ -14,7 +14,7 @@ entity memoriaInstrucoes is
     );
     port (
         addr : in  bit_vector(addressSize-1 downto 0);
-        data : out bit_vector(dataSize-1 downto 0)
+        data : out bit_vector(4*dataSize-1 downto 0)
     );
 end entity memoriaInstrucoes;
 

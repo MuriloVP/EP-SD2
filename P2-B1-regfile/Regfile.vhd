@@ -40,7 +40,16 @@ architecture arch of regfile is
     signal rr1_integer : integer range 0 to 31;
     signal rr2_integer : integer range 0 to 31;
 
+-- Sinal de clock corrigido
+    signal clock_att : bit;
+
 begin
+
+
+    -- Definição do clock_att
+    with wr select
+    clock_att <= clock when '0';
+            <= not clock when '1';
 
     -- Conversão para integer
     wr_integer <= to_integer(unsigned(wr));
@@ -61,7 +70,7 @@ begin
         R_i: reg 
             generic map (dataSize => 64)
             port map (
-                clock => clock,
+                clock => clock_att,
                 reset => reset,
                 enable => reg_enable,
                 d => d,
