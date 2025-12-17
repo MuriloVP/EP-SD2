@@ -10,7 +10,7 @@ ghdl -a Mux_par.vhd
 ghdl -a Mem_instr.vhd
 ghdl -a Mem_dados.vhd
 ghdl -a Adder_par.vhd
-ghdl -a fullader.vhd
+ghdl -a fulladder.vhd
 ghdl -a Ula_bit.vhd
 ghdl -a Extensor_par.vhd
 ghdl -a Left_shifter.vhd
