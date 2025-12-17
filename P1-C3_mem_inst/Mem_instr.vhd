@@ -48,5 +48,14 @@ architecture arch of memoriaInstrucoes is
   --! Memory matrix
   constant mem : mem_type := init_mem(datFileName);
 begin
-  data <= mem(to_integer(unsigned(addr)));
+  process(addr)
+    variable idx : integer;
+  begin
+    idx := to_integer(unsigned(addr));
+    if idx <= depth - 4 then
+      data <= mem(idx) & mem(idx+1) & mem(idx+2) & mem(idx+3);
+    else
+      data <= (others => '0');
+    end if;
+  end process; 
 end arch;

@@ -20,6 +20,7 @@ architecture tb of memoriaDados_tb is
 
     constant N_ADDR : natural := 4; 
     constant N_DATA : natural := 8; 
+    constant N_WORD : natural := 64; -- Constante correta para 8 bytes
     constant ARQUIVO_TESTE : string := "memDados_conteudo_inicial.dat"; 
 
     component memoriaDados is
@@ -32,16 +33,16 @@ architecture tb of memoriaDados_tb is
             clock  : in  bit; 
             wr     : in  bit;
             addr   : in  bit_vector(addressSize-1 downto 0);
-            data_i : in  bit_vector(dataSize-1 downto 0);
-            data_o : out bit_vector(dataSize-1 downto 0)
+            data_i : in  bit_vector(8*dataSize-1 downto 0);
+            data_o : out bit_vector(8*dataSize-1 downto 0)
         );
     end component;
     
     signal clock_in   : bit := '0';
     signal wr_in      : bit := '0';
     signal addr_in    : bit_vector(N_ADDR-1 downto 0) := (others => '0');
-    signal data_i_in  : bit_vector(N_DATA-1 downto 0) := (others => '0');
-    signal data_o_out : bit_vector(N_DATA-1 downto 0);
+    signal data_i_in  : bit_vector(N_WORD-1 downto 0) := (others => '0');
+    signal data_o_out : bit_vector(N_WORD-1 downto 0);
     
     signal keep_simulating: bit := '0';
     constant clockPeriod : time := 10 ns;
@@ -49,6 +50,7 @@ architecture tb of memoriaDados_tb is
 begin
 
     clock_in <= (not clock_in) and keep_simulating after clockPeriod/2;
+    
     dut: memoriaDados
         generic map (
             addressSize => N_ADDR,
@@ -68,24 +70,34 @@ begin
         type pattern_type is record
             wr_val          : bit;
             addr_val        : bit_vector(N_ADDR-1 downto 0);
-            data_i_val      : bit_vector(N_DATA-1 downto 0);
-            data_o_esperado : bit_vector(N_DATA-1 downto 0);
+            data_i_val      : bit_vector(N_WORD-1 downto 0);
+            data_o_esperado : bit_vector(N_WORD-1 downto 0);
         end record;
 
         type pattern_array is array (natural range <>) of pattern_type;
         
         constant patterns: pattern_array := (
-            --  wr,  addr,   data_i,  data_o esperado
-            -- CASO 0: Leitura do arquivo
-            ('0',"0000","00011001", "10000000"), 
-            -- CASO 1: Leitura do arquivo 
-            ('0',"1111","10011000", "00001001"),
-            -- CASO 2: Escrita 
-            ('1',"0010","10000001", "10000001"),
-            -- CASO 3: Escrita 
-            ('1',"0011","00000000", "00000000"),
-            -- CASO 4: Escrita 
-            ('1',"0100","10101010", "10101010") 
+        -- CASO 0: Leitura do arquivo (Endereço 0)
+            0 => (
+                wr_val => '0', 
+                addr_val => "0000", 
+                data_i_val => (others => '0'), 
+                data_o_esperado => "1000000000000000000000000000000000000000000000000000000000000000"
+            ),
+        -- CASO 1: Escrita de valor novo (Endereço 0)
+            1 => (
+                wr_val => '1', 
+                addr_val => "0000", 
+                data_i_val      => "0000000000000000000000000000000011111111111111111111111111111111", 
+                data_o_esperado => "0000000000000000000000000000000011111111111111111111111111111111"
+            ),
+        -- CASO 2: Leitura para confirmar a escrita
+            2 => (
+                wr_val => '0', 
+                addr_val => "0000", 
+                data_i_val      => (others => '0'), 
+                data_o_esperado => "0000000000000000000000000000000011111111111111111111111111111111"
+            )
         );
 
     begin
@@ -102,9 +114,8 @@ begin
             wait for clockPeriod; 
 
             assert data_o_out = patterns(i).data_o_esperado 
-            report "Erro no endereco " & integer'image(to_integer(unsigned(addr_in))) &
-                   ". Esperado: " & integer'image(to_integer(unsigned(patterns(i).data_o_esperado))) &
-                   ", Lido: " & integer'image(to_integer(unsigned(data_o_out)))
+            report "Erro no Teste #" & integer'image(i) & 
+                   " (Addr: " & integer'image(to_integer(unsigned(addr_in))) & ")"
             severity error;
         end loop;
 

@@ -19,7 +19,8 @@ end memoriaInstrucoes_tb;
 architecture tb of memoriaInstrucoes_tb is
 
     constant N_ADDR : natural := 4; 
-    constant N_DATA : natural := 8; 
+    constant N_DATA : natural := 8;
+    constant N_INSTR: natural :=32; 
     constant ARQUIVO_TESTE : string := "memInstr_conteudo.dat";
 
     component memoriaInstrucoes is
@@ -30,12 +31,12 @@ architecture tb of memoriaInstrucoes_tb is
         );
         port (
             addr : in  bit_vector(addressSize-1 downto 0);
-            data : out bit_vector(dataSize-1 downto 0)
+            data : out bit_vector(4*dataSize-1 downto 0)
         );
     end component;
 
     signal addr_in : bit_vector(N_ADDR-1 downto 0) := (others => '0');
-    signal data_out : bit_vector(N_DATA-1 downto 0);
+    signal data_out : bit_vector(N_INSTR-1 downto 0);
 
 begin
 
@@ -54,16 +55,16 @@ begin
         
         type pattern_type is record
             addr_val     : bit_vector(N_ADDR-1 downto 0);
-            data_esperado: bit_vector(N_DATA-1 downto 0);
+            data_esperado: bit_vector(N_INSTR-1 downto 0);
         end record;
 
         type pattern_array is array (natural range <>) of pattern_type;
         
         constant patterns: pattern_array := (
-            ("0000", "11111000"), 
-            ("0001", "01000000"), 
-            ("0010", "00000011"), 
-            ("0011", "11100001")  
+            0 => (
+                addr_val      => "0000", 
+                data_esperado => "11111000010000000000001111100001"
+            )
         );
 
     begin

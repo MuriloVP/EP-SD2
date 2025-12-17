@@ -58,14 +58,35 @@ architecture arch of memoriaDados is
   
 begin
   wrt: process(clock)
+    variable idx: integer; 
   begin
     if (clock='1' and clock'event) then
       if (wr='1') then
-        mem(to_integer(unsigned(addr))) <= data_i;
+        idx := to_integer(unsigned(addr));
+        if idx <= depth - 8 then
+                    mem(idx)   <= data_i(63 downto 56);
+                    mem(idx+1) <= data_i(55 downto 48);
+                    mem(idx+2) <= data_i(47 downto 40);
+                    mem(idx+3) <= data_i(39 downto 32);
+                    mem(idx+4) <= data_i(31 downto 24);
+                    mem(idx+5) <= data_i(23 downto 16);
+                    mem(idx+6) <= data_i(15 downto 8);
+                    mem(idx+7) <= data_i(7 downto 0);  
+            end if;
       end if;
     end if;
   end process;
-  
-  data_o <= mem(to_integer(unsigned(addr)));
+
+  process(addr, mem)
+    variable idx: integer;
+  begin
+    idx := to_integer(unsigned(addr));
+    if idx <= depth - 8 then
+            data_o <= mem(idx)   & mem(idx+1) & mem(idx+2) & mem(idx+3) &
+                      mem(idx+4) & mem(idx+5) & mem(idx+6) & mem(idx+7);
+        else
+            data_o <= (others => '0');
+        end if;
+    end process;
   
 end arch;
