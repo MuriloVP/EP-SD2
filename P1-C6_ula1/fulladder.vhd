@@ -10,6 +10,9 @@
 --- MURILO VITOR PIERETTI - 15481030 -----------------
 ------------------------------------------------------
 
+library ieee;
+use ieee.numeric_bit.all;
+
 entity fulladder is
   port (
     a, b, cin: in bit;
