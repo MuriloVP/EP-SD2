@@ -1,43 +1,46 @@
 v 4
-file . "Ula64.vhd" "69a11806b5620ad31d188e99c3ee4b4863bc041a" "20251217214222.046":
-  entity ula at 13( 622) + 0 on 91;
-  architecture arch of ula at 28( 1140) + 0 on 92;
-file . "Extensor_par.vhd" "b3e7fff06a09cde46bde5ea71ef9db42b900515f" "20251217214221.978":
-  entity sign_extend at 13( 622) + 0 on 85;
-  architecture arch of sign_extend at 30( 1266) + 0 on 86;
-file . "Adder_par.vhd" "42de64e6c290a83f55e67a66ccaef7ae27dc0f75" "20251217214221.912":
-  entity adder_n at 13( 622) + 0 on 81;
-  architecture adder_n_arch of adder_n at 28( 967) + 0 on 82;
-file . "Mem_instr.vhd" "22770519095a7501a71535478f75182c1273a19a" "20251217214221.861":
-  entity memoriainstrucoes at 13( 622) + 0 on 77;
-  architecture arch of memoriainstrucoes at 29( 1043) + 0 on 78;
-file . "Registrador_par.vhd" "61cf272e950f4d1917041f85f53193b0d683ce82" "20251217214221.811":
-  entity reg at 13( 622) + 0 on 73;
-  architecture comportamento of reg at 29( 965) + 0 on 74;
-file . "polilegv8.vhd" "ff811cda86f4462c8c203662f856d6776b14db6f" "20251217214222.117":
-  entity polilegv8 at 13( 622) + 0 on 97;
-  architecture arch of polilegv8 at 23( 781) + 0 on 98;
-file . "fluxoDados.vhd" "a41640c8804f2cac7ab886e4fd68cf4a9b774016" "20251217214222.068":
-  entity fluxodados at 13( 622) + 0 on 93;
-  architecture arch of fluxodados at 35( 1693) + 0 on 94;
-file . "unidadeControle.vhd" "a9ed5fad436069b893c48f771800ccaad548341d" "20251217214222.095":
-  entity unidadecontrole at 13( 622) + 0 on 95;
-  architecture arch of unidadecontrole at 33( 1623) + 0 on 96;
-file . "polilegv8_tb.vhd" "dc26dac785afb6899297674cfdd15e42d4cc4d99" "20251217214222.139":
-  entity polilegv8_tb at 13( 622) + 0 on 99;
-  architecture arch of polilegv8_tb at 20( 707) + 0 on 100;
-file . "Mux_par.vhd" "8e1adc770b88d9a7c58342b5154b1ec9ada45c7b" "20251217214221.836":
-  entity mux_n at 13( 622) + 0 on 75;
-  architecture arch_mux of mux_n at 28( 963) + 0 on 76;
-file . "Mem_dados.vhd" "7d9559759ee2074941cde44df6f4f4e283105d9d" "20251217214221.884":
-  entity memoriadados at 13( 622) + 0 on 79;
-  architecture arch of memoriadados at 32( 1102) + 0 on 80;
-file . "Ula_bit.vhd" "524902928cf4fb1cd68980882c4ab8b9caa7259d" "20251217214221.954":
-  entity ula_bit at 13( 622) + 0 on 83;
-  architecture arch of ula_bit at 28( 1241) + 0 on 84;
-file . "Left_shifter.vhd" "13c76d293c17b74d643b7036e8f9e3b03817a2f3" "20251217214222.002":
-  entity two_left_shifts at 13( 622) + 0 on 87;
-  architecture arch of two_left_shifts at 26( 908) + 0 on 88;
-file . "Regfile.vhd" "9dd3502c7642a5290da9f7586acb10fe59ec0fc0" "20251217214222.024":
-  entity regfile at 13( 622) + 0 on 89;
-  architecture arch of regfile at 30( 1442) + 0 on 90;
+file . "fulladder.vhd" "a326cd2047e537a8a88a71a874c2ab8245ee3a3f" "20251218003554.293":
+  entity fulladder at 13( 622) + 0 on 261;
+  architecture structural of fulladder at 23( 820) + 0 on 262;
+file . "Ula64.vhd" "69a11806b5620ad31d188e99c3ee4b4863bc041a" "20251218003554.434":
+  entity ula at 13( 622) + 0 on 271;
+  architecture arch of ula at 28( 1140) + 0 on 272;
+file . "Extensor_par.vhd" "b3e7fff06a09cde46bde5ea71ef9db42b900515f" "20251218003554.358":
+  entity sign_extend at 13( 622) + 0 on 265;
+  architecture arch of sign_extend at 30( 1266) + 0 on 266;
+file . "Adder_par.vhd" "42de64e6c290a83f55e67a66ccaef7ae27dc0f75" "20251218003554.268":
+  entity adder_n at 13( 622) + 0 on 259;
+  architecture adder_n_arch of adder_n at 28( 967) + 0 on 260;
+file . "Mem_instr.vhd" "22770519095a7501a71535478f75182c1273a19a" "20251218003554.214":
+  entity memoriainstrucoes at 13( 622) + 0 on 255;
+  architecture arch of memoriainstrucoes at 29( 1043) + 0 on 256;
+file . "Registrador_par.vhd" "61cf272e950f4d1917041f85f53193b0d683ce82" "20251218003554.128":
+  entity reg at 13( 622) + 0 on 251;
+  architecture comportamento of reg at 29( 965) + 0 on 252;
+file . "polilegv8.vhd" "ff811cda86f4462c8c203662f856d6776b14db6f" "20251218003554.524":
+  entity polilegv8 at 13( 622) + 0 on 277;
+  architecture arch of polilegv8 at 23( 781) + 0 on 278;
+file . "fluxoDados.vhd" "a41640c8804f2cac7ab886e4fd68cf4a9b774016" "20251218003554.471":
+  entity fluxodados at 13( 622) + 0 on 273;
+  architecture arch of fluxodados at 35( 1693) + 0 on 274;
+file . "unidadeControle.vhd" "a9ed5fad436069b893c48f771800ccaad548341d" "20251218003554.498":
+  entity unidadecontrole at 13( 622) + 0 on 275;
+  architecture arch of unidadecontrole at 33( 1623) + 0 on 276;
+file . "polilegv8_tb.vhd" "c555a5ca09a05c5788df0dffb8453b0225ec7c2a" "20251218003554.551":
+  entity polilegv8_tb at 13( 622) + 0 on 279;
+  architecture arch of polilegv8_tb at 20( 707) + 0 on 280;
+file . "Mux_par.vhd" "8e1adc770b88d9a7c58342b5154b1ec9ada45c7b" "20251218003554.171":
+  entity mux_n at 13( 622) + 0 on 253;
+  architecture arch_mux of mux_n at 28( 963) + 0 on 254;
+file . "Mem_dados.vhd" "7d9559759ee2074941cde44df6f4f4e283105d9d" "20251218003554.244":
+  entity memoriadados at 13( 622) + 0 on 257;
+  architecture arch of memoriadados at 32( 1102) + 0 on 258;
+file . "Ula_bit.vhd" "f48978e75cb81016cc45ee7644785fed9c983e16" "20251218003554.333":
+  entity ula_bit at 13( 622) + 0 on 263;
+  architecture arch of ula_bit at 28( 1241) + 0 on 264;
+file . "Left_shifter.vhd" "13c76d293c17b74d643b7036e8f9e3b03817a2f3" "20251218003554.383":
+  entity two_left_shifts at 13( 622) + 0 on 267;
+  architecture arch of two_left_shifts at 26( 908) + 0 on 268;
+file . "Regfile.vhd" "9dd3502c7642a5290da9f7586acb10fe59ec0fc0" "20251218003554.409":
+  entity regfile at 13( 622) + 0 on 269;
+  architecture arch of regfile at 30( 1442) + 0 on 270;

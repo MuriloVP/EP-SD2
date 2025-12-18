@@ -22,4 +22,13 @@ ghdl -a polilegv8.vhd
 ghdl -a polilegv8_tb.vhd
 
 ghdl -e polilegv8_tb
-ghdl -r polilegv8_tb --vcd=saidapolilegv8.vcd
+ghdl -r polilegv8_tb --vcd=saidapolilegv8ula64change.vcd
+
+
+#ghdl -a fulladder.vhd
+#ghdl -a Ula_bit.vhd
+#ghdl -a Ula64.vhd
+#ghdl -a Ula64_tb.vhd
+
+#ghdl -e tb
+#ghdl -r tb --vcd=saidaula64.vcd

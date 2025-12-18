@@ -40,8 +40,8 @@ architecture arch of ula_bit is
 
 begin
     -- Guardando os operandos invertidos ou não 
-    a_sig <= not a when ainvert = '1' else a;
-    b_sig <= not b when binvert = '1' else b;
+    a_sig <= not a when ainvert = '1' and not(operation = "11") else a;
+    b_sig <= not b when binvert = '1' and not(operation = "11") else b;
     -- Operações lógicas
     and_res <= a_sig and b_sig;
     or_res  <= a_sig or b_sig;
@@ -61,7 +61,7 @@ begin
         result <= and_res      when "00", -- AND
                   or_res       when "01", -- OR
                   add_res      when "10", -- ADD
-                  not b_sig        when "11"; -- Pass B
+                  b_sig        when "11"; -- Pass B
 
 
     overflow <= cin xor cout_adder;

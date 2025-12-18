@@ -31,7 +31,7 @@ architecture arch of polilegv8_tb is
     signal clock_in : bit := '0';
     signal reset_in : bit := '0';
 
-    constant DELAY : time := 5 ns;
+    constant DELAY : time := 1000 ns;
 
 begin
 
